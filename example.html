@@ -116,6 +116,8 @@
         width: 70%;
     }
     
+    .ui-state-highlight { height: 1.5em; line-height: 1.2em; }
+    
   </style>
 </head>
 <body ng-app="ExampleApp">
@@ -132,9 +134,9 @@
             </li>
         </ul>
       
-      <div class="questionListContainer">
+      <div id="sortable" class="questionListContainer">
         <!--Question List (Repeat Start)-->
-        <div ng-drop="editMode || htmlExists" ng-init= "htmlExists = question.html == ''" ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.html == '',question: true}" ng-repeat="question in questionList" style="position:relative;float:left;">
+        <div ng-drop="editMode || htmlExists" ng-init= "htmlExists = question.html == ''" ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.html == '','question': true,'ui-state-default': true}" ng-repeat="question in questionList" style="position:relative;float:left;">
           <span ng-hide="htmlExists">{{$index+1}} )</span> 
           <span ng-show="htmlExists" style="display: block;text-align: center;margin-top: 4%; min-height: 40px;">Drag Question type from left or click on them to add here</span>
           <div ng-class="{editableArea:editMode,dropableArea: true}" ng-bind-html="trustAsHtml(question.html)">
@@ -174,6 +176,7 @@
 
   </div>
   <footer style="margin-top:2000px;">footer</footer>
+  
   <script src="jquery.min.js"></script>
   <script src="angular.js"></script>
   <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-animate.js"></script>-->
@@ -181,6 +184,14 @@
   <script src="ui-bootstrap-tpls-1.1.2.js"></script>
   <script src="ngDraggable.js"></script>
   <script src="script.js"></script>
-
+  <script src="jquery-ui.js"></script>
+  <script>
+  $(function() {
+    $( "#sortable" ).sortable({
+      placeholder: "ui-state-highlight"
+    });
+    $( "#sortable" ).disableSelection();
+  });
+  </script>
 </body>
 </html>
