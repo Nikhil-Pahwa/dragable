@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ngDraggable</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <style>
+
+    *{
+        -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
+    
+    @media screen and (max-width: 668px) {
+      .draggable-objects,.newQuestion{
+        display: none;
+      }
+    }
+    
+    .multiSelectQuestions{
+          width: 80%;          
+    }
+
+    [ng-drag]{
+        -moz-user-select: -moz-none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    [ng-drag]{
+        width: 100px;
+        height: 100px;
+        background: rgba(255,0,0, 0.5);
+        color:white;
+        text-align: center;
+        padding-top:40px;
+        display: inline-block;
+        margin:0 10px;
+        cursor: move;
+    }
+    [contenteditable]{
+      border: 1px solid rgba(255,0,0, 0.5);
+    }
+    ul.draggable-objects:after{
+        display: block;
+        content:"";
+        clear:both;
+    }
+    .draggable-objects{
+        float: left;
+    }
+    .draggable-objects li{
+        /*float:left;*/
+        display: block;
+        width: 120px;
+        height:100px;
+        margin: 10px;
+    }
+    [ng-drag].drag-over{
+        border:solid 1px red;
+    }
+    [ng-drag].dragging{
+        opacity: 0.5;
+    }
+    [ng-drop]{
+        
+        /*text-align: center;*/
+        width: 600px;
+        /*min-height: 200px;*/
+        padding:20px;
+        display: block;
+        margin:8px auto;
+        position: relative;
+        float: left;
+    }
+    .questionListContainer{
+        float: left;
+        width: 40%;
+    }
+    .question{
+      background: rgba(0,255,0, 0.5);
+      float: left;
+    } 
+    [ng-drop].newQuestion {
+      background: rgba(251, 255, 0,0.5);
+    }
+    [ng-drop].drag-enter{
+        border:solid 5px red;
+    }
+    [ng-drop] span.title{
+        display: block;
+        position: absolute;
+        top:50%;
+        left:50%;
+        width: 200px;
+        height: 20px;
+        margin-left: -100px;
+        margin-top: -10px;
+    }
+    [ng-drop] div{
+        position: relative;        
+    }
+    
+    .edit-btn{
+        position: absolute !important;
+        right: 20px;
+        top: 20px;
+    }
+    
+    .add-btn{
+        position:absolute !important; 
+        right: 20px; 
+        top: 20px;
+    }
+    
+    .dropableArea {
+        width: 70%;
+    }
+    
+  </style>
+</head>
+<body ng-app="ExampleApp">
+
+  <div class="container" ng-controller="MainCtrl" ng-cloak>
+
+    <div class="row">
+      <!--<h1>ngDraggable Example</h1>-->
+    </div>
+
+        <ul class="draggable-objects">
+            <li  ng-repeat="obj in draggableObjects" >
+                <div ng-drag="true" ng-drag-data="obj" data-allow-transform="true"> {{obj.name}} </div>
+            </li>
+        </ul>
+      
+      <div class="questionListContainer">
+        <!--Question List (Repeat Start)-->
+        <div ng-drop="editMode || htmlExists" ng-init= "htmlExists = question.html == ''" ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.html == '',question: true}" ng-repeat="question in questionList" style="position:relative;float:left;">
+          <span ng-hide="htmlExists">{{$index+1}} )</span> 
+          <span ng-show="htmlExists" style="display: block;text-align: center;margin-top: 4%; min-height: 40px;">Drag Question type from left or click on them to add here</span>
+          <div ng-class="{editableArea:editMode,dropableArea: true}" ng-bind-html="trustAsHtml(question.html)">
+          </div>  
+          <!--Drop Down & Edit Button Functionality (Repeat End)-->
+          <div class="btn-group add-btn" data-ng-show="editMode || htmlExists" uib-dropdown is-open="status.isopen">
+            <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+              + <span class="caret"></span>
+            </button>
+            <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+              <li role="menuitem"><a href="#">Add comment</a></li>
+              <li role="menuitem"><a href="#">Upload image</a></li>
+              <li role="menuitem"><a href="#">Upload video</a></li>           
+            </ul>
+          </div>
+          <div class='save-cancel-btn' data-ng-show="editMode || htmlExists" style='margin-top: 20px;'>
+                <button class='btn btn-primary pull-left' data-ng-click="editMode = false; cancelQuestion($index)" value='Edit'>Cancel</button>
+                <button class='btn btn-primary pull-right' data-ng-click="editMode = false; htmlExists; saveQuestion($index, htmlExists)" value='Save'>Save</button>
+          </div>
+          <button class="btn btn-primary edit-btn" data-ng-hide="editMode || htmlExists" type="button" data-ng-click="editMode = true; editQuestion($index)">Edit</button>
+          <button class="btn btn-primary edit-btn" style ="margin-right: 65px;" data-ng-hide="editMode || htmlExists" type="button" data-ng-click="deleteQuestion($index)">Delete</button>
+        </div>
+      </div>
+
+      <!--<div ng-drop="true" ng-drop-success="onDropComplete2($data,$event)">
+          <span class="title">Drop area #2</span>
+
+          <div ng-repeat="obj in droppedObjects2" ng-drag="true" ng-drag-data="obj" ng-drag-success="onDragSuccess2($data,$event)" ng-center-anchor="{{centerAnchor}}">
+              {{obj.name}}
+          </div>
+
+      </div>-->
+
+    <hr>
+
+
+
+  </div>
+  <footer style="margin-top:2000px;">footer</footer>
+  <script src="jquery.min.js"></script>
+  <script src="angular.js"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-animate.js"></script>-->
+  <script src="angular-animate.js"></script>
+  <script src="ui-bootstrap-tpls-1.1.2.js"></script>
+  <script src="ngDraggable.js"></script>
+  <script src="script.js"></script>
+
+</body>
+</html>
