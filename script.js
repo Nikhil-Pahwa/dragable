@@ -8,7 +8,7 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
         $scope.isEditableState = false;
         $scope.divHtmlVar = $sce.trustAsHtml('');
         $scope.isPristine = true;
-        $scope.questionList = [
+        $scope.questionListOld = [
                 {
                         "id": "1",
                         "html": "<p class='editableField'>This is dummy first question</p>\
@@ -25,29 +25,43 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                 }
         ];
         
-        $scope.questionListOne = [
+        $scope.questionList = [
                 {
-                        "id": "1",
                         "type": "single-choice",
-                        "options": [
-                                "poor",
-                                "ok",
-                                "Best"
-                        ],
-                        "optionSelected": "1",
                         "label": "State of the working area?",
+                        "options": [
+                                {
+                                        "optionKey": "SUV",
+                                        "optionState": "false"
+                                },
+                                {
+                                        "optionKey": "Sedan",
+                                        "optionState": "true"
+                                },
+                                {
+                                        "optionKey": "hatchback",
+                                        "optionState": "false"
+                                }                               
+                        ],
                         "comment": "comment Section is empty"
                 },
                 {
-                        "id": "1",
-                        "type": "single-choice",
+                        "type": "multiple-choice",
+                        "label": "How was the survey?",
                         "options": [
-                                "SUV",
-                                "Sedan",
-                                "hatchback"
+                                {
+                                        "optionKey": "Poor",
+                                        "optionState": "false"
+                                },
+                                {
+                                        "optionKey": "Ok",
+                                        "optionState": "true"
+                                },
+                                {
+                                        "optionKey": "Good",
+                                        "optionState": "false"
+                                }                               
                         ],
-                        "optionSelected": "1",
-                        "label": "What type of car do you own?",
                         "comment": "comment Section is empty"
                 }
         ];
@@ -148,8 +162,16 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
               return htmlTemplate; 
         }
         
-        var inArray = function(array, obj) {
-            var index = array.indexOf(obj);
+        $scope.saveTemplate = function(){
+                var data = {
+                        "type": template.PrimaryName || "",
+			"label": template.SecondaryName || "",
+			"options": template.PreSchoolBoard || "",
+			"comment": template.PrimaryBoard || ""
+		}
+                
+                console.log('data is '+data);
+                
         }
         
       });

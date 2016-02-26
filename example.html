@@ -117,6 +117,10 @@
     }
     
     .ui-state-highlight { height: 1.5em; line-height: 1.2em; }
+    ul {        
+        list-style: none;
+        padding-left: 20px;
+    }
     
   </style>
 </head>
@@ -137,10 +141,47 @@
       <div id="sortable" class="questionListContainer">
         <!--Question List (Repeat Start)-->
         <div ng-drop="editMode || htmlExists" ng-init= "htmlExists = question.html == ''" ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.html == '','question': true,'ui-state-default': true}" ng-repeat="question in questionList" style="position:relative;float:left;">
-          <span ng-hide="htmlExists">{{$index+1}} )</span> 
+          
           <span ng-show="htmlExists" style="display: block;text-align: center;margin-top: 4%; min-height: 40px;">Drag Question type from left or click on them to add here</span>
-          <div ng-class="{editableArea:editMode,dropableArea: true}" ng-bind-html="trustAsHtml(question.html)">
-          </div>  
+          <!--<div ng-class="{editableArea:editMode,dropableArea: true}" ng-bind-html="trustAsHtml(question.html)">
+          </div>  -->
+          <div ng-class="{editableArea:editMode,dropableArea: true}">
+              <span ng-hide="htmlExists">{{$index+1}} )</span> 
+              <!--Single Choice Question-->
+              <span ng-if="question.type == 'single-choice'">
+                <span class="question-label">{{question.label}}</span>
+                <input type="text" name="QuestionLabel"  ng-model="schoolList.QuestionLabel">
+                <div class="optionsGroup">
+                <ul>
+                    <li ng-repeat="option in question.options">
+                        <label>
+                            <input type="radio" name="name" value="{{option.optionKey}}" ng-checked="{{option.optionState}}"/>
+                            {{option.optionKey}}
+                        </label>
+                    </li>
+                </ul>
+                </div>  
+              </span>
+              <!--Single Choice Question End-->
+              
+              <!--Multi Choice Question-->
+              <span ng-if="question.type == 'multiple-choice'">
+                <span class="question-label">{{question.label}}</span>
+                <div class="optionsGroup">
+                <ul>
+                    <li ng-repeat="option in question.options">
+                        <label>
+                            <input type="checkbox" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
+                            {{option.optionKey}}
+                        </label>
+                    </li>
+                </ul>
+                </div>  
+              </span>
+              <!--Multi Choice Question End-->
+              
+          </div>
+          
           <!--Drop Down & Edit Button Functionality (Repeat End)-->
           <div class="btn-group add-btn" data-ng-show="editMode || htmlExists" uib-dropdown is-open="status.isopen">
             <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
@@ -159,8 +200,9 @@
           <button class="btn btn-primary edit-btn" data-ng-hide="editMode || htmlExists" type="button" data-ng-click="editMode = true; editQuestion($index)">Edit</button>
           <button class="btn btn-primary edit-btn" style ="margin-right: 65px;" data-ng-hide="editMode || htmlExists" type="button" data-ng-click="deleteQuestion($index)">Delete</button>
         </div>
+        <div class=""><button class="btn btn-primary" ng-click="saveTemplate(template)" style="">Save Template</button></div>
       </div>
-
+      
       <!--<div ng-drop="true" ng-drop-success="onDropComplete2($data,$event)">
           <span class="title">Drop area #2</span>
 
