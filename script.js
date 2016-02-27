@@ -1,8 +1,9 @@
+/* global PrimaryName */
 angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
       controller('MainCtrl', function ($scope,$sce,$compile) {
         $scope.centerAnchor = true;
         $scope.toggleCenterAnchor = function () {$scope.centerAnchor = !$scope.centerAnchor}
-        $scope.draggableObjects = [{name:'checkbox'}, {name:'questions'}, {name:'Date & Time'}, {name:'multiple choice'}, {name:'Text Box'}];
+        $scope.draggableObjects = [{name:'checkbox'},{name:'radiobutton'}, {name:'questions'}, {name:'Date & Time'}, {name:'multiple choice'}, {name:'Text Box'}];
         $scope.droppedObjects1 = [];
         $scope.droppedObjects2= [];
         $scope.isEditableState = false;
@@ -43,7 +44,9 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                                         "optionState": "false"
                                 }                               
                         ],
-                        "comment": "comment Section is empty"
+                        "isCommentEnable": "true",
+                        "isImageUpload": "true",
+                        "isVideoUpload": "true",
                 },
                 {
                         "type": "multiple-choice",
@@ -62,7 +65,9 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                                         "optionState": "false"
                                 }                               
                         ],
-                        "comment": "comment Section is empty"
+                        "isCommentEnable": "false",
+                        "isImageUpload": "true",
+                        "isVideoUpload": "false",
                 }
         ];
         
@@ -107,12 +112,17 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
         $scope.trustAsHtml = $sce.trustAsHtml;
         
         var addHTMLToDragArea = function(data,index,isNewQuestion){
-               if(isNewQuestion){
-                       angular.element($('.newQuestion')).append( getHTMLTemplate(data.name));  
-                       $scope.isPristine = false;
-               }else{
-                       angular.element($('.questionListContainer .dropableArea')).eq(index).append( getHTMLTemplate(data.name));
-               }                           
+                if(data.name == "radiobutton"){
+                        $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
+                }else if(data.name == "checkbox"){
+                        $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
+                }
+        //        if(isNewQuestion){
+        //                angular.element($('.newQuestion')).append( getHTMLTemplate(data.name));  
+        //                $scope.isPristine = false;
+        //        }else{
+        //                angular.element($('.questionListContainer .dropableArea')).eq(index).append( getHTMLTemplate(data.name));
+        //        }                           
         }
         
         $scope.onDragSuccess1=function(data,evt){
@@ -142,6 +152,8 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                                         break;
                       case 'checkbox' : htmlTemplate = "<div class='editableField' contenteditable='true'><input type ='checkbox' name ='bike' value='bike' contenteditable='true'>Bike</div>"
                                         break;
+                      case 'radiobutton' : htmlTemplate = "<input type ='radio' name ='state'>Dummy"
+                                        break;
                       case 'Date & Time' : htmlTemplate = "<div><input type='date' name='bday'></div>"
                                         break;
                       case 'multiple choice' : htmlTemplate = "<div class='multiSelectQuestions'>\
@@ -162,15 +174,15 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
               return htmlTemplate; 
         }
         
-        $scope.saveTemplate = function(){
-                var data = {
-                        "type": template.PrimaryName || "",
-			"label": template.SecondaryName || "",
-			"options": template.PreSchoolBoard || "",
-			"comment": template.PrimaryBoard || ""
-		}
+        $scope.saveTemplate = function(){ console.log($scope.questionList);
+                // var data = {
+                //         "type": question.PrimaryName || "",
+		// 	"label": query.SecondaryName || "",
+		// 	"options": query.PreSchoolBoard || "",
+		// 	"comment": query.PrimaryBoard || ""
+		// }
                 
-                console.log('data is '+data);
+              
                 
         }
         

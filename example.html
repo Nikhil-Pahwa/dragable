@@ -138,7 +138,7 @@
             </li>
         </ul>
       
-      <div id="sortable" class="questionListContainer">
+      <div id="sortablea" class="questionListContainer">
         <!--Question List (Repeat Start)-->
         <div ng-drop="editMode || htmlExists" ng-init= "htmlExists = question.html == ''" ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.html == '','question': true,'ui-state-default': true}" ng-repeat="question in questionList" style="position:relative;float:left;">
           
@@ -148,35 +148,60 @@
           <div ng-class="{editableArea:editMode,dropableArea: true}">
               <span ng-hide="htmlExists">{{$index+1}} )</span> 
               <!--Single Choice Question-->
-              <span ng-if="question.type == 'single-choice'">
-                <span class="question-label">{{question.label}}</span>
-                <input type="text" name="QuestionLabel"  ng-model="schoolList.QuestionLabel">
+              <span ng-show="question.type == 'single-choice'">
+                <span ng-hide="editMode" class="question-label">{{question.label}}</span>
+                <input ng-show="editMode" type="text" name="QuestionLabel" ng-model="question.label"> 
                 <div class="optionsGroup">
                 <ul>
                     <li ng-repeat="option in question.options">
                         <label>
-                            <input type="radio" name="name" value="{{option.optionKey}}" ng-checked="{{option.optionState}}"/>
-                            {{option.optionKey}}
+                            <input type="radio" ng-checked="{{option.optionState}}" name="state"/>
+                            <span ng-hide="editMode">{{option.optionKey}}</span>
+                            <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
                         </label>
                     </li>
                 </ul>
                 </div>  
+                <div ng-show="{{question.isCommentEnable}}" class="comment-sect">
+                    <textarea ></textarea>
+                </div>   
+                <div ng-show="{{question.isImageUpload}}" class="imageUpload-sect" style="margin: 15px 0;">
+                    <p>Image: </p>
+                    <input type="file" id="myFile">
+                </div>
+                <div ng-show="{{question.isVideoUpload}}" class="videoUpload-sect">
+                    <p>Video: </p>
+                    <input type="file" id="myFile">
+                </div>    
               </span>
               <!--Single Choice Question End-->
               
               <!--Multi Choice Question-->
-              <span ng-if="question.type == 'multiple-choice'">
-                <span class="question-label">{{question.label}}</span>
+              <span ng-show="question.type == 'multiple-choice'">
+                <span ng-hide="editMode" class="question-label">{{question.label}}</span>
+                <input ng-show="editMode" type="text" name="QuestionLabel" ng-model="question.label"> 
                 <div class="optionsGroup">
                 <ul>
                     <li ng-repeat="option in question.options">
                         <label>
                             <input type="checkbox" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
-                            {{option.optionKey}}
+                            <span ng-hide="editMode">{{option.optionKey}}</span>
+                            <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
                         </label>
                     </li>
                 </ul>
                 </div>  
+                <div ng-show="{{question.isCommentEnable}}" class="comment-sect">
+                    <textarea ></textarea>
+                </div>   
+                <div ng-show="{{question.isImageUpload}}" class="imageUpload-sect" style="margin: 15px 0;">
+                    <p>Image: </p>
+                    <input type="file" id="myFile">
+                </div>
+                <div ng-show="{{question.isVideoUpload}}" class="videoUpload-sect">
+                    <p>Video: </p>
+                    <input type="file" id="myFile">
+                </div>    
               </span>
               <!--Multi Choice Question End-->
               
@@ -200,7 +225,8 @@
           <button class="btn btn-primary edit-btn" data-ng-hide="editMode || htmlExists" type="button" data-ng-click="editMode = true; editQuestion($index)">Edit</button>
           <button class="btn btn-primary edit-btn" style ="margin-right: 65px;" data-ng-hide="editMode || htmlExists" type="button" data-ng-click="deleteQuestion($index)">Delete</button>
         </div>
-        <div class=""><button class="btn btn-primary" ng-click="saveTemplate(template)" style="">Save Template</button></div>
+         
+        <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
       </div>
       
       <!--<div ng-drop="true" ng-drop-success="onDropComplete2($data,$event)">
