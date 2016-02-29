@@ -128,86 +128,66 @@
 
   <div class="container" ng-controller="MainCtrl" ng-cloak>
 
-    <div class="row">
-      <!--<h1>ngDraggable Example</h1>-->
-    </div>
 
-        <ul class="draggable-objects">
-            <li  ng-repeat="obj in draggableObjects" >
-                <div ng-drag="true" ng-drag-data="obj" data-allow-transform="true"> {{obj.name}} </div>
-            </li>
-        </ul>
+      <ul class="draggable-objects">
+        <li  ng-repeat="obj in draggableObjects" >
+            <div ng-drag="true" ng-drag-data="obj" data-allow-transform="true"> {{obj.name}} </div>
+        </li>
+      </ul>
       
       <div id="sortablea" class="questionListContainer">
         <!--Question List (Repeat Start)-->
-        <div ng-drop="editMode || htmlExists" ng-init= "htmlExists = question.html == ''" ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.html == '','question': true,'ui-state-default': true}" ng-repeat="question in questionList" style="position:relative;float:left;">
+        <div ng-init= "isNewQuestion = question.type == 'new-question'" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" ng-repeat="question in questionList" style="position:relative;float:left;">
           
-          <span ng-show="htmlExists" style="display: block;text-align: center;margin-top: 4%; min-height: 40px;">Drag Question type from left or click on them to add here</span>
-          <!--<div ng-class="{editableArea:editMode,dropableArea: true}" ng-bind-html="trustAsHtml(question.html)">
-          </div>  -->
           <div ng-class="{editableArea:editMode,dropableArea: true}">
-              <span ng-hide="htmlExists">{{$index+1}} )</span> 
-              <!--Single Choice Question-->
-              <span ng-show="question.type == 'single-choice'">
-                <span ng-hide="editMode" class="question-label">{{question.label}}</span>
-                <input ng-show="editMode" type="text" name="QuestionLabel" ng-model="question.label"> 
-                <div class="optionsGroup">
-                <ul>
-                    <li ng-repeat="option in question.options">
-                        <label>
-                            <input type="radio" ng-checked="{{option.optionState}}" name="state"/>
-                            <span ng-hide="editMode">{{option.optionKey}}</span>
-                            <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
-                        </label>
-                    </li>
-                </ul>
-                </div>  
-                <div ng-show="{{question.isCommentEnable}}" class="comment-sect">
-                    <textarea ></textarea>
-                </div>   
-                <div ng-show="{{question.isImageUpload}}" class="imageUpload-sect" style="margin: 15px 0;">
-                    <p>Image: </p>
-                    <input type="file" id="myFile">
-                </div>
-                <div ng-show="{{question.isVideoUpload}}" class="videoUpload-sect">
-                    <p>Video: </p>
-                    <input type="file" id="myFile">
-                </div>    
-              </span>
-              <!--Single Choice Question End-->
+              <span ng-hide="question.label == '' || question.type == ''">{{$index+1}} )</span> 
+              <span ng-hide="editMode" class="question-label">{{question.label}}</span>
+              <input ng-show="editMode" type="text" name="QuestionLabel" ng-model="question.label">   
               
-              <!--Multi Choice Question-->
-              <span ng-show="question.type == 'multiple-choice'">
-                <span ng-hide="editMode" class="question-label">{{question.label}}</span>
-                <input ng-show="editMode" type="text" name="QuestionLabel" ng-model="question.label"> 
+              <!--Checkboxes and RadioButtons-->
+              <span>
                 <div class="optionsGroup">
-                <ul>
-                    <li ng-repeat="option in question.options">
-                        <label>
-                            <input type="checkbox" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
-                            <span ng-hide="editMode">{{option.optionKey}}</span>
-                            <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
-                        </label>
-                    </li>
-                </ul>
-                </div>  
-                <div ng-show="{{question.isCommentEnable}}" class="comment-sect">
-                    <textarea ></textarea>
-                </div>   
-                <div ng-show="{{question.isImageUpload}}" class="imageUpload-sect" style="margin: 15px 0;">
-                    <p>Image: </p>
-                    <input type="file" id="myFile">
-                </div>
-                <div ng-show="{{question.isVideoUpload}}" class="videoUpload-sect">
-                    <p>Video: </p>
-                    <input type="file" id="myFile">
-                </div>    
+                    <ul>
+                        <li ng-if="question.buttonType == 'checkbox'" ng-repeat="option in question.options">
+                            <label>
+                                <input type="checkbox" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
+                                <span ng-hide="editMode">{{option.optionKey}}</span>
+                                <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
+                            </label>
+                        </li>
+                        <li ng-if="question.buttonType =='radiobutton'" ng-repeat="option in question.options">
+                            <label>
+                                <input type="radio" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
+                                <span ng-hide="editMode">{{option.optionKey}}</span>
+                                <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
+                            </label>
+                        </li>
+                    </ul>
+                </div>                 
               </span>
-              <!--Multi Choice Question End-->
+              <!--Checkboxes and RadioButtons End-->
               
+              <div ng-show="{{question.isCommentEnable}}" class="comment-sect">
+                  <textarea ></textarea>
+              </div>   
+              <div ng-show="{{question.isImageUpload}}" class="imageUpload-sect" style="margin: 15px 0;">
+                  <p>Image: </p>
+                  <input type="file" id="myFile">
+              </div>
+              <div ng-show="{{question.isVideoUpload}}" class="videoUpload-sect">
+                  <p>Video: </p>
+                  <input type="file" id="myFile">
+              </div>    
+                
+              <!--New Question-->
+              <span ng-show="question.label == '' || question.type == ''">
+                  <span>Drop question here</span>                    
+              </span>
+              <!--New Question End-->
+            
           </div>
           
-          <!--Drop Down & Edit Button Functionality (Repeat End)-->
+          <!--Drop Down & Edit Button Functionality -->
           <div class="btn-group add-btn" data-ng-show="editMode || htmlExists" uib-dropdown is-open="status.isopen">
             <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
               + <span class="caret"></span>
@@ -222,10 +202,16 @@
                 <button class='btn btn-primary pull-left' data-ng-click="editMode = false; cancelQuestion($index)" value='Edit'>Cancel</button>
                 <button class='btn btn-primary pull-right' data-ng-click="editMode = false; htmlExists; saveQuestion($index, htmlExists)" value='Save'>Save</button>
           </div>
-          <button class="btn btn-primary edit-btn" data-ng-hide="editMode || htmlExists" type="button" data-ng-click="editMode = true; editQuestion($index)">Edit</button>
-          <button class="btn btn-primary edit-btn" style ="margin-right: 65px;" data-ng-hide="editMode || htmlExists" type="button" data-ng-click="deleteQuestion($index)">Delete</button>
+          
+          <!--For NewQuestion-->
+          <button class='btn btn-primary pull-right' data-ng-show="question.type == 'new-question'" data-ng-click="saveNewQuestion($index)" value='Save'>Save</button>
+          <!--For NewQuestion END-->
+          
+          <button class="btn btn-primary edit-btn" data-ng-hide="editMode || (question.type == 'new-question')" type="button" data-ng-click="editMode = true; editQuestion($index)">Edit</button>
+          <button class="btn btn-primary edit-btn" style ="margin-right: 65px;" data-ng-hide="editMode || (question.type == 'new-question')" type="button" data-ng-click="deleteQuestion($index)">Delete</button>
         </div>
-         
+        <!--Drop Down & Edit Button Functionality (Repeat End)-->
+        
         <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
       </div>
       

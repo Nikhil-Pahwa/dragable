@@ -28,8 +28,9 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
         
         $scope.questionList = [
                 {
-                        "type": "single-choice",
+                        "type": "existing-question",
                         "label": "State of the working area?",
+                        "buttonType":"radiobutton",
                         "options": [
                                 {
                                         "optionKey": "SUV",
@@ -44,13 +45,14 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                                         "optionState": "false"
                                 }                               
                         ],
-                        "isCommentEnable": "true",
-                        "isImageUpload": "true",
-                        "isVideoUpload": "true",
+                        "isCommentEnable": "false",
+                        "isImageUpload": "false",
+                        "isVideoUpload": "false",
                 },
                 {
-                        "type": "multiple-choice",
+                        "type": "existing-question",
                         "label": "How was the survey?",
+                        "buttonType":"checkbox",
                         "options": [
                                 {
                                         "optionKey": "Poor",
@@ -65,8 +67,17 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                                         "optionState": "false"
                                 }                               
                         ],
+                        "isCommentEnable": "true",
+                        "isImageUpload": "false",
+                        "isVideoUpload": "false",
+                },
+                {
+                        "type": "new-question",
+                        "label": "",
+                        "buttonType":"checkbox",
+                        "options": [],
                         "isCommentEnable": "false",
-                        "isImageUpload": "true",
+                        "isImageUpload": "false",
                         "isVideoUpload": "false",
                 }
         ];
@@ -101,6 +112,24 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                 }                                              
         }
         
+        $scope.saveNewQuestion = function(){
+                
+                $scope.questionList[$scope.questionList.length - 1].type = "existing-question";
+                
+                var obj =  {
+                        "type": "new-question",
+                        "label": "",
+                        "buttonType":"checkbox",
+                        "options": [],
+                        "isCommentEnable": "false",
+                        "isImageUpload": "false",
+                        "isVideoUpload": "false",
+                };
+                
+                $scope.questionList.push(obj);
+                ab = $scope.questionList;
+        }
+        
         $scope.onDropComplete=function(data,index,isNewQuestion){              
                addHTMLToDragArea(data,index,isNewQuestion);                                    
         }
@@ -111,18 +140,15 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
         
         $scope.trustAsHtml = $sce.trustAsHtml;
         
-        var addHTMLToDragArea = function(data,index,isNewQuestion){
+        var addHTMLToDragArea = function(data,index){
                 if(data.name == "radiobutton"){
                         $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
                 }else if(data.name == "checkbox"){
                         $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
-                }
-        //        if(isNewQuestion){
-        //                angular.element($('.newQuestion')).append( getHTMLTemplate(data.name));  
-        //                $scope.isPristine = false;
-        //        }else{
-        //                angular.element($('.questionListContainer .dropableArea')).eq(index).append( getHTMLTemplate(data.name));
-        //        }                           
+                }else if(data.name == "questions"){
+                        $scope.questionList[index].label = "This is a dummy question?";
+                }             
+                ab = $scope.questionList;
         }
         
         $scope.onDragSuccess1=function(data,evt){
