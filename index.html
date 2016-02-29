@@ -180,7 +180,7 @@
               </div>    
                 
               <!--New Question-->
-              <span ng-show="question.label == '' || question.type == ''">
+              <span ng-show="question.label == '' && (question.options == '')">
                   <span>Drop question here</span>                    
               </span>
               <!--New Question End-->
@@ -214,31 +214,19 @@
         
         <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
       </div>
-      
-      <!--<div ng-drop="true" ng-drop-success="onDropComplete2($data,$event)">
-          <span class="title">Drop area #2</span>
-
-          <div ng-repeat="obj in droppedObjects2" ng-drag="true" ng-drag-data="obj" ng-drag-success="onDragSuccess2($data,$event)" ng-center-anchor="{{centerAnchor}}">
-              {{obj.name}}
-          </div>
-
-      </div>-->
-
-    <hr>
-
+  
 
 
   </div>
   <footer style="margin-top:2000px;">footer</footer>
   
-  <script src="jquery.min.js"></script>
-  <script src="angular.js"></script>
-  <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-animate.js"></script>-->
-  <script src="angular-animate.js"></script>
-  <script src="ui-bootstrap-tpls-1.1.2.js"></script>
-  <script src="ngDraggable.js"></script>
+  <script src="libs/jquery.min.js"></script>
+  <script src="libs/angular.js"></script>
+  <script src="libs/angular-animate.js"></script>
+  <script src="libs/ui-bootstrap-tpls-1.1.2.js"></script>
+  <script src="libs/ngDraggable.js"></script>
   <script src="script.js"></script>
-  <script src="jquery-ui.js"></script>
+  <script src="libs/jquery-ui.js"></script>
   <script>
   $(function() {
     $( "#sortable" ).sortable({
