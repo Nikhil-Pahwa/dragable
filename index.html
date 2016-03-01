@@ -137,7 +137,7 @@
       
       <div id="sortablea" class="questionListContainer">
         <!--Question List (Repeat Start)-->
-        <div ng-init= "isNewQuestion = question.type == 'new-question'" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" ng-repeat="question in questionList" style="position:relative;float:left;">
+        <div ng-init= "isNewQuestion = question.type == 'new-question';" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" ng-repeat="question in questionList" style="position:relative;float:left;">
           
           <div ng-class="{editableArea:editMode,dropableArea: true}">
               <span ng-hide="question.label == '' || question.type == ''">{{$index+1}} )</span> 
@@ -167,6 +167,13 @@
               </span>
               <!--Checkboxes and RadioButtons End-->
               
+              <!--Date Time-->
+              <div ng-show="question.isDateTime" class="isDateTime-sect" style="margin: 10px 0;">
+                  <input type="datetime-local" name="bdaytime">
+              </div>
+              <!--Date Time End-->
+              
+              <!--Textarea and file upload-->
               <div ng-show="{{question.isCommentEnable}}" class="comment-sect">
                   <textarea ></textarea>
               </div>   
@@ -178,7 +185,8 @@
                   <p>Video: </p>
                   <input type="file" id="myFile">
               </div>    
-                
+              <!--Textarea and file upload End-->
+              
               <!--New Question-->
               <span ng-show="question.label == '' && (question.options == '')">
                   <span>Drop question here</span>                    

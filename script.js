@@ -3,12 +3,7 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
       controller('MainCtrl', function ($scope,$sce,$compile) {
         $scope.centerAnchor = true;
         $scope.toggleCenterAnchor = function () {$scope.centerAnchor = !$scope.centerAnchor}
-        $scope.draggableObjects = [ {name:'questions'}, {name:'checkbox'}, {name:'radiobutton'}, {name:'Date & Time'}];
-        $scope.droppedObjects1 = [];
-        $scope.droppedObjects2= [];
-        $scope.isEditableState = false;
-        $scope.divHtmlVar = $sce.trustAsHtml('');
-        $scope.isPristine = true;
+        $scope.draggableObjects = [ {name:'questions'}, {name:'checkbox'}, {name:'radiobutton'}, {name:'datetime'}];        
         $scope.questionList = [
                 {
                         "type": "existing-question",
@@ -31,6 +26,7 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                         "isCommentEnable": "false",
                         "isImageUpload": "false",
                         "isVideoUpload": "false",
+                        "isDateTime": "true"
                 },
                 {
                         "type": "existing-question",
@@ -53,16 +49,17 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                         "isCommentEnable": "true",
                         "isImageUpload": "false",
                         "isVideoUpload": "false",
+                        "isDateTime": false
                 },
                 {
                         "type": "new-question",
                         "label": "",
-                        "buttonType":"checkbox",
+                        "buttonType":"",
                         "options": [],
                         "isCommentEnable": "false",
                         "isImageUpload": "false",
                         "isVideoUpload": "false",
-                }
+                        "isDateTime": false                }
         ];
         
         $scope.editQuestion = function(index){
@@ -107,8 +104,7 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                         "isVideoUpload": "false",
                 };
                 
-                $scope.questionList.push(obj);
-                ab = $scope.questionList;
+                $scope.questionList.push(obj);               
         }
         
         $scope.onDropComplete=function(data,index,isNewQuestion){              
@@ -121,14 +117,22 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                
         var addHTMLToDragArea = function(data,index){
                 if(data.name == "radiobutton"){
-                        $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
+                        if($scope.questionList[index].buttonType == "radiobutton" || $scope.questionList[index].buttonType == ""){
+                                $scope.questionList[index].buttonType = "radiobutton";
+                                $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});    
+                        }
                 }else if(data.name == "checkbox"){
-                        $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
+                        if($scope.questionList[index].buttonType == "checkbox" || $scope.questionList[index].buttonType == ""){
+                                $scope.questionList[index].buttonType = "checkbox";
+                                $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
+                        }
                 }else if(data.name == "questions"){
                         $scope.questionList[index].label = "This is a dummy question?";
-                }             
-                ab = $scope.questionList;
+                }else if(data.name == "datetime"){
+                        console.log('ge');
+                        $scope.questionList[index].isDateTime ="true";
+                }         
+                   
+                 ab = $scope.questionList[index]; 
         }
-        
-     
       });
