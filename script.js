@@ -12,21 +12,21 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                         "options": [
                                 {
                                         "optionKey": "SUV",
-                                        "optionState": "false"
+                                        "optionState": false
                                 },
                                 {
                                         "optionKey": "Sedan",
-                                        "optionState": "true"
+                                        "optionState": false
                                 },
                                 {
                                         "optionKey": "hatchback",
-                                        "optionState": "false"
+                                        "optionState": false
                                 }                               
                         ],
-                        "isCommentEnable": "false",
-                        "isImageUpload": "false",
-                        "isVideoUpload": "false",
-                        "isDateTime": "true"
+                        "isCommentEnable": false,
+                        "isImageUpload": false,
+                        "isVideoUpload": false,
+                        "isDateTime": false
                 },
                 {
                         "type": "existing-question",
@@ -35,36 +35,40 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                         "options": [
                                 {
                                         "optionKey": "Poor",
-                                        "optionState": "false"
+                                        "optionState": false
                                 },
                                 {
                                         "optionKey": "Ok",
-                                        "optionState": "true"
+                                        "optionState": false
                                 },
                                 {
                                         "optionKey": "Good",
-                                        "optionState": "false"
+                                        "optionState": false
                                 }                               
                         ],
-                        "isCommentEnable": "true",
-                        "isImageUpload": "false",
-                        "isVideoUpload": "false",
+                        "isCommentEnable": false,
+                        "isImageUpload": false,
+                        "isVideoUpload": false,
                         "isDateTime": false
-                },
-                {
+                }
+        ];
+        
+        $scope.addNewQuestionTemplate = function(){
+                
+                 var obj =  {
                         "type": "new-question",
                         "label": "",
                         "buttonType":"",
                         "options": [],
-                        "isCommentEnable": "false",
-                        "isImageUpload": "false",
-                        "isVideoUpload": "false",
-                        "isDateTime": false                }
-        ];
-        
-        $scope.editQuestion = function(index){
-                angular.element(document.querySelectorAll('.questionListContainer .question')).eq(index).find('.editableField').prop('contenteditable','true')
+                        "isCommentEnable": false,
+                        "isImageUpload": false,
+                        "isVideoUpload": false,
+                };
+                
+                $scope.questionList.push(obj);        
         }
+        
+        $scope.addNewQuestionTemplate();
         
         $scope.deleteQuestion = function(index){
                 $scope.questionList.splice(index, 1);                
@@ -74,37 +78,9 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                 angular.element($('.questionListContainer .dropableArea')).eq(index).find('.editableField').removeAttr('contenteditable');   
         }
         
-        $scope.saveQuestion = function(index,isNewQuestion){
-                var obj = {};
-                angular.element($('.questionListContainer .dropableArea')).eq(index).find('.editableField').removeAttr('contenteditable');   
-                if(isNewQuestion){
-                        obj = {
-                                "id": "",
-                                "html":angular.element($('.questionListContainer .dropableArea')).eq(index).html()
-                        }
-                        //$scope.questionList.push(obj);
-                        $scope.questionList.splice(index, 0, obj);
-                        angular.element('.newQuestion .dropableArea').html("")
-                }else{
-                        $scope.questionList[index].html = angular.element($('.questionListContainer .dropableArea')).eq(index).html();
-                }                                              
-        }
-        
         $scope.saveNewQuestion = function(){
-                
-                $scope.questionList[$scope.questionList.length - 1].type = "existing-question";
-                
-                var obj =  {
-                        "type": "new-question",
-                        "label": "",
-                        "buttonType":"checkbox",
-                        "options": [],
-                        "isCommentEnable": "false",
-                        "isImageUpload": "false",
-                        "isVideoUpload": "false",
-                };
-                
-                $scope.questionList.push(obj);               
+               $scope.questionList[$scope.questionList.length - 1].type = "existing-question";
+               $scope.addNewQuestionTemplate();          
         }
         
         $scope.onDropComplete=function(data,index,isNewQuestion){              
@@ -116,23 +92,37 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
         }
                
         var addHTMLToDragArea = function(data,index){
-                if(data.name == "radiobutton"){
-                        if($scope.questionList[index].buttonType == "radiobutton" || $scope.questionList[index].buttonType == ""){
-                                $scope.questionList[index].buttonType = "radiobutton";
-                                $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});    
-                        }
-                }else if(data.name == "checkbox"){
-                        if($scope.questionList[index].buttonType == "checkbox" || $scope.questionList[index].buttonType == ""){
-                                $scope.questionList[index].buttonType = "checkbox";
-                                $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
-                        }
-                }else if(data.name == "questions"){
-                        $scope.questionList[index].label = "This is a dummy question?";
-                }else if(data.name == "datetime"){
-                        console.log('ge');
-                        $scope.questionList[index].isDateTime ="true";
-                }         
-                   
-                 ab = $scope.questionList[index]; 
+           
+             switch(data.name){
+                        case "radiobutton":  if($scope.questionList[index].buttonType == "radiobutton" || $scope.questionList[index].buttonType == ""){
+                                                $scope.questionList[index].buttonType = "radiobutton";
+                                                $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});    
+                                             }
+                                             break;
+                                             
+                        case "checkbox":     if($scope.questionList[index].buttonType == "checkbox" || $scope.questionList[index].buttonType == ""){
+                                                $scope.questionList[index].buttonType = "checkbox";
+                                                $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
+                                             }
+                                             break;      
+                                                   
+                        case "questions":    $scope.questionList[index].label = "This is a dummy question?";
+                                             break;
+                                                         
+                        case "datetime":     $scope.questionList[index].isDateTime =true;
+                                             break;                       
+                                                            
+                        case "comment":      $scope.questionList[index].isCommentEnable =true;
+                                             break;   
+                                             
+                        case "imageupload":  $scope.questionList[index].isImageUpload =true;
+                                             break;         
+                                             
+                        case "videoupload":  $scope.questionList[index].isVideoUpload =true;
+                                             break;   
+                                                                                                                                                                                                                                                                                                                                    default:             console.log('Element is not handled');                 
+               }
+               
+                ab = $scope.questionList; 
         }
       });
