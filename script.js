@@ -1,13 +1,18 @@
 /* global PrimaryName */
 angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
-      controller('MainCtrl', function ($scope,$sce,$compile) {
+      controller('MainCtrl', function ($scope,$sce,$compile,$http) {
         $scope.draggableObjects = [ {name:'questions'}, {name:'checkbox'}, {name:'radiobutton'}, {name:'datetime'}];        
-          $scope.status = {
-    isFirstOpen: true,
-    isFirstDisabled: false
-  };
+        $scope.status = {
+                                isFirstOpen: true,
+                                isFirstDisabled: false
+                        };
   
-  $scope.oneAtATime = false;
+        $scope.oneAtATime = false;
+         $scope.sortableOptions = {
+        handle: ' .handle'
+        // items: ' .panel:not(.panel-heading)'
+        // axis: 'y'
+    }
         $scope.questionList = [
                 {
                         "type": "existing-question",
@@ -57,11 +62,17 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                 }
         ];
         
-        $scope.newQuestion = {}; 
+        $http.get("http://10.175.173.208:8080/commutingdb/findById?id=11")
+           .then(function(response) {
+        	$scope.questionList = JSON.parse(response.data.templateJsonB);
+        	
+        	//$scope.addNewQuestionTemplate();
+        	console.log("*** ",$scope.questionList)
+        }); 
         
-        $scope.addNewQuestionTemplate = function(){
+        $scope.newQuestionTemplate = function(){
                 
-                 var obj =  {
+                $scope.newQuestion = {
                         "type": "new-question",
                         "label": "",
                         "buttonType":"",
@@ -69,12 +80,23 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                         "isCommentEnable": false,
                         "isImageUpload": false,
                         "isVideoUpload": false,
-                };
-                
-                $scope.questionList.push(obj);        
+                };                                     
         }
         
-   //     $scope.addNewQuestionTemplate();
+        $scope.saveNewQuestion = function(isNewQuestion){
+               if(isNewQuestion){
+                     $scope.newQuestion.type = "existing-question";
+                     $scope.questionList.push($scope.newQuestion);  
+                     $scope.newQuestionTemplate();  
+               }    
+               $http.post('saveTemplate',JSON.stringify($scope.questionList)).then(function (response) {
+    			 alert(response);
+	    	}, function (error) {
+	          alert(response);
+	       });                    
+        }
+        
+        $scope.newQuestionTemplate();
         
         $scope.deleteQuestion = function(index,event){
                 event.preventDefault()
@@ -83,11 +105,6 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
         
         $scope.cancelQuestion = function(index){
                 angular.element($('.questionListContainer .dropableArea')).eq(index).find('.editableField').removeAttr('contenteditable');   
-        }
-        
-        $scope.saveNewQuestion = function(){
-               $scope.questionList[$scope.questionList.length - 1].type = "existing-question";
-               $scope.addNewQuestionTemplate();          
         }
         
         $scope.onDropComplete=function(data,index,isNewQuestion){              
@@ -133,6 +150,6 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                                                                                                                                                                                                                                                                                                                                     default:             console.log('Element is not handled');                 
                }
                
-                ab = $scope.questionList; 
+                ab = $scope.newQuestion; 
         }
       });

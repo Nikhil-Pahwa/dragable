@@ -139,8 +139,8 @@
       </ul>
     </div>  
     <div class="right-sect">
-    <uib-accordion is-open="status.open" close-others="oneAtATime">
-      <div id="sortable" class="">
+    <uib-accordion is-open="status.open" close-others="oneAtATime" ui-sortable="sortableOptions">
+      <div>
         <!--Question List (Repeat Start)-->
         <uib-accordion-group ng-repeat="question in questionList">
           <div ng-init= "isNewQuestion = question.type == 'new-question';" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" style="position:relative;float:left;">
@@ -193,14 +193,8 @@
                   <p>Video: </p>
                   <input type="file" id="myFile">
               </div>    
-              <!--Textarea and file upload End-->
-              
-              <!--New Question-->
-              <!--<span ng-show="question.label == '' && (question.buttonType == '')">
-                  <span>Drop question here</span>                    
-              </span>-->
-              <!--New Question End-->
-            
+              <!--Textarea and file upload End-->              
+                          
           </div>
           <!--Drop Down & Edit Button Functionality -->
           <div class="btn-group add-btn" data-ng-show="editMode || isNewQuestion" uib-dropdown is-open="status.isopen">
@@ -218,10 +212,6 @@
                 <button class='btn btn-primary pull-right' data-ng-click="editMode = false" value='Save'>Save</button>
           </div>
           
-          <!--For NewQuestion-->
-          <button class='btn btn-primary pull-right' data-ng-show="question.type == 'new-question'" data-ng-click="saveNewQuestion($index)" value='Save'>Save</button>
-          <!--For NewQuestion END-->
-          
           <button class="btn btn-primary edit-btn" data-ng-hide="editMode || (question.type == 'new-question')" type="button" data-ng-click="editMode = true">Edit</button>
           
         </div>
@@ -229,33 +219,48 @@
         </uib-accordion-group>                
       </div>
   </uib-accordion>
+  
+  <!--For NewQuestion-->
   <div ng-drop="true"  ng-drop-success="onDropComplete($data,$index,true)" ng-class="{'newQuestion':true}" style="position:relative;float:left;">
-          <span ng-hide="newQuestion.label">
-              <span>Drop question here</span>                    
-          </span>
+      <span ng-hide="newQuestion.label">
+          <span>Drop question here</span>                    
+      </span>
       <input ng-show="newQuestion.label" type="text" name="QuestionLabel" ng-model="newQuestion.label">
-      <button class='btn btn-primary pull-right' ng-show="newQuestion.label" ng-click="saveNewQuestion($index)" value='Save'>Save</button> 
+      <!--Checkboxes and RadioButtons-->
+      <span>
+        <div class="optionsGroup">
+            <ul>
+                <li ng-if="newQuestion.buttonType == 'checkbox'" ng-repeat="option in newQuestion.options">
+                    <label>
+                        <input type="checkbox" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
+                        <input type="text" ng-model="option.optionKey"> 
+                    </label>
+                </li>
+                <li ng-if="newQuestion.buttonType =='radiobutton'" ng-repeat="option in newQuestion.options">
+                    <label>
+                        <input type="radio" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
+                        <input type="text" ng-model="option.optionKey"> 
+                    </label>
+                </li>
+            </ul>
+        </div>                 
+      </span>
+      <!--Checkboxes and RadioButtons End-->
+      <button class='btn btn-primary pull-right' ng-show="newQuestion.label" ng-click="saveNewQuestion(true)" value='Save'>Save</button> 
   </div>  
+  <!--For NewQuestion END-->
         
   <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
   </div>
 </div>
-  <footer style="margin-top:2000px;">footer</footer>
+  
   
   <script src="libs/jquery.min.js"></script>
   <script src="libs/angular.js"></script>
   <script src="libs/angular-animate.js"></script>
   <script src="libs/ui-bootstrap-tpls-1.1.2.js"></script>
+  <script src="libs/sortable.min.js"></script>
   <script src="libs/ngDraggable.js"></script>
-  <script src="script.js"></script>
-  <script src="libs/jquery-ui.js"></script>
-  <script>
-  $(function() {
-    $( "#sortable" ).sortable({
-      placeholder: "ui-state-highlight"
-    });
-    $( "#sortable" ).disableSelection();
-  });
-  </script>
+  <script src="script.js"></script> 
 </body>
 </html>
