@@ -64,11 +64,10 @@
     [ng-drop]{
         
         /*text-align: center;*/
-        width: 600px;
+        width: 100%;
         /*min-height: 200px;*/
         padding:20px;
-        display: block;
-        margin:8px auto;
+        display: block;       
         position: relative;
         float: left;
     }
@@ -101,9 +100,7 @@
     }
     
     .edit-btn{
-        position: absolute !important;
-        right: 20px;
-        top: 20px;
+        padding: 0 12px;
     }
     
     .add-btn{
@@ -121,7 +118,13 @@
         list-style: none;
         padding-left: 20px;
     }
-    
+    .panel-body{
+        padding: 0;
+    }
+    a{
+      outline: none !important;
+      text-decoration: none !important;
+    }
   </style>
 </head>
 <body ng-app="ExampleApp">
@@ -134,16 +137,20 @@
             <div ng-drag="true" ng-drag-data="obj" data-allow-transform="true"> {{obj.name}} </div>
         </li>
       </ul>
-      
+
+    <uib-accordion is-open="status.open" close-others="oneAtATime">
       <div id="sortablea" class="questionListContainer">
         <!--Question List (Repeat Start)-->
-        <div ng-init= "isNewQuestion = question.type == 'new-question';" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" ng-repeat="question in questionList" style="position:relative;float:left;">
+        <uib-accordion-group ng-repeat="question in questionList">
+          <div ng-init= "isNewQuestion = question.type == 'new-question';" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" style="position:relative;float:left;">
           
-          <div ng-init= "isNewQuestion = question.type == 'new-question'" ng-class="{editableArea:editMode,dropableArea: true}">
+          <div ng-class="{editableArea:editMode,dropableArea: true}">
+             <uib-accordion-heading>
               <span ng-hide="question.label == ''">{{$index+1}} )</span> 
               <span ng-hide="editMode" class="question-label">{{question.label}}</span>
               <input ng-show="editMode" type="text" name="QuestionLabel" ng-model="question.label">   
-              
+              <button class="btn edit-btn btn-primary pull-right" data-ng-hide="question.type == 'new-question'" type="button" data-ng-click="deleteQuestion($index,$event)">Delete</button>
+             </uib-accordion-heading>
               <!--Checkboxes and RadioButtons-->
               <span>
                 <div class="optionsGroup">
@@ -194,7 +201,6 @@
               <!--New Question End-->
             
           </div>
-          *** {{isNewQuestion}}
           <!--Drop Down & Edit Button Functionality -->
           <div class="btn-group add-btn" data-ng-show="editMode || isNewQuestion" uib-dropdown is-open="status.isopen">
             <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
@@ -216,9 +222,10 @@
           <!--For NewQuestion END-->
           
           <button class="btn btn-primary edit-btn" data-ng-hide="editMode || (question.type == 'new-question')" type="button" data-ng-click="editMode = true">Edit</button>
-          <button class="btn btn-primary edit-btn" style ="margin-right: 65px;" data-ng-hide="editMode || (question.type == 'new-question')" type="button" data-ng-click="deleteQuestion($index)">Delete</button>
+          
         </div>
         <!--Drop Down & Edit Button Functionality (Repeat End)-->
+        </uib-accordion-group>
         
         <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
       </div>
@@ -226,6 +233,7 @@
 
 
   </div>
+  </uib-accordion>
   <footer style="margin-top:2000px;">footer</footer>
   
   <script src="libs/jquery.min.js"></script>

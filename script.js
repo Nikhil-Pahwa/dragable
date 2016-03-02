@@ -1,9 +1,13 @@
 /* global PrimaryName */
 angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
       controller('MainCtrl', function ($scope,$sce,$compile) {
-        $scope.centerAnchor = true;
-        $scope.toggleCenterAnchor = function () {$scope.centerAnchor = !$scope.centerAnchor}
         $scope.draggableObjects = [ {name:'questions'}, {name:'checkbox'}, {name:'radiobutton'}, {name:'datetime'}];        
+          $scope.status = {
+    isFirstOpen: true,
+    isFirstDisabled: false
+  };
+  
+  $scope.oneAtATime = false;
         $scope.questionList = [
                 {
                         "type": "existing-question",
@@ -70,8 +74,9 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
         
         $scope.addNewQuestionTemplate();
         
-        $scope.deleteQuestion = function(index){
-                $scope.questionList.splice(index, 1);                
+        $scope.deleteQuestion = function(index,event){
+                event.preventDefault()
+                $scope.questionList.splice(index, 1);                                
         }
         
         $scope.cancelQuestion = function(index){
