@@ -57,6 +57,8 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                 }
         ];
         
+        $scope.newQuestion = {}; 
+        
         $scope.addNewQuestionTemplate = function(){
                 
                  var obj =  {
@@ -72,7 +74,7 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                 $scope.questionList.push(obj);        
         }
         
-        $scope.addNewQuestionTemplate();
+   //     $scope.addNewQuestionTemplate();
         
         $scope.deleteQuestion = function(index,event){
                 event.preventDefault()
@@ -96,34 +98,37 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
                addHTMLToDragArea(data,index,isNewQuestion);   
         }
                
-        var addHTMLToDragArea = function(data,index){
-           
+        var addHTMLToDragArea = function(data,index,isNewQuestion){
+             
+             var elem = (isNewQuestion)?   $scope.newQuestion: $scope.questionList[index];
+            
              switch(data.name){
-                        case "radiobutton":  if($scope.questionList[index].buttonType == "radiobutton" || $scope.questionList[index].buttonType == ""){
-                                                $scope.questionList[index].buttonType = "radiobutton";
-                                                $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});    
+                     
+                        case "radiobutton":  if(elem.buttonType == "radiobutton" || elem.buttonType == ""){
+                                                elem.buttonType = "radiobutton";
+                                                elem.options.push({"optionKey":"dummy","optionState":"false"});    
                                              }
                                              break;
                                              
-                        case "checkbox":     if($scope.questionList[index].buttonType == "checkbox" || $scope.questionList[index].buttonType == ""){
-                                                $scope.questionList[index].buttonType = "checkbox";
-                                                $scope.questionList[index].options.push({"optionKey":"dummy","optionState":"false"});
+                        case "checkbox":     if(elem.buttonType == "checkbox" || elem.buttonType == ""){
+                                                elem.buttonType = "checkbox";
+                                                elem.options.push({"optionKey":"dummy","optionState":"false"});
                                              }
                                              break;      
                                                    
-                        case "questions":    $scope.questionList[index].label = "This is a dummy question?";
+                        case "questions":    elem.label = "This is a dummy question?";
                                              break;
                                                          
-                        case "datetime":     $scope.questionList[index].isDateTime =true;
+                        case "datetime":     elem.isDateTime =true;
                                              break;                       
                                                             
-                        case "comment":      $scope.questionList[index].isCommentEnable =true;
+                        case "comment":      elem.isCommentEnable =true;
                                              break;   
                                              
-                        case "imageupload":  $scope.questionList[index].isImageUpload =true;
+                        case "imageupload":  elem.isImageUpload =true;
                                              break;         
                                              
-                        case "videoupload":  $scope.questionList[index].isVideoUpload =true;
+                        case "videoupload":  elem.isVideoUpload =true;
                                              break;   
                                                                                                                                                                                                                                                                                                                                     default:             console.log('Element is not handled');                 
                }

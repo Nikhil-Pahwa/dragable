@@ -71,9 +71,9 @@
         position: relative;
         float: left;
     }
-    .questionListContainer{
+    .right-sect{
         float: left;
-        width: 40%;
+        width: 50%;
     }
     .question{
       background: rgba(0,255,0, 0.5);
@@ -131,15 +131,16 @@
 
   <div class="container" ng-controller="MainCtrl" ng-cloak>
 
-
+    <div class="left-sect">
       <ul class="draggable-objects">
         <li  ng-repeat="obj in draggableObjects" >
             <div ng-drag="true" ng-drag-data="obj" data-allow-transform="true"> {{obj.name}} </div>
         </li>
       </ul>
-
+    </div>  
+    <div class="right-sect">
     <uib-accordion is-open="status.open" close-others="oneAtATime">
-      <div id="sortablea" class="questionListContainer">
+      <div id="sortable" class="">
         <!--Question List (Repeat Start)-->
         <uib-accordion-group ng-repeat="question in questionList">
           <div ng-init= "isNewQuestion = question.type == 'new-question';" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" style="position:relative;float:left;">
@@ -195,9 +196,9 @@
               <!--Textarea and file upload End-->
               
               <!--New Question-->
-              <span ng-show="question.label == '' && (question.buttonType == '')">
+              <!--<span ng-show="question.label == '' && (question.buttonType == '')">
                   <span>Drop question here</span>                    
-              </span>
+              </span>-->
               <!--New Question End-->
             
           </div>
@@ -225,15 +226,20 @@
           
         </div>
         <!--Drop Down & Edit Button Functionality (Repeat End)-->
-        </uib-accordion-group>
-        
-        <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
+        </uib-accordion-group>                
       </div>
-  
-
-
-  </div>
   </uib-accordion>
+  <div ng-drop="true"  ng-drop-success="onDropComplete($data,$index,true)" ng-class="{'newQuestion':true}" style="position:relative;float:left;">
+          <span ng-hide="newQuestion.label">
+              <span>Drop question here</span>                    
+          </span>
+      <input ng-show="newQuestion.label" type="text" name="QuestionLabel" ng-model="newQuestion.label">
+      <button class='btn btn-primary pull-right' ng-show="newQuestion.label" ng-click="saveNewQuestion($index)" value='Save'>Save</button> 
+  </div>  
+        
+  <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
+  </div>
+</div>
   <footer style="margin-top:2000px;">footer</footer>
   
   <script src="libs/jquery.min.js"></script>
