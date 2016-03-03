@@ -139,123 +139,124 @@
       </ul>
     </div>  
     <div class="right-sect">
-    <uib-accordion is-open="status.open" close-others="oneAtATime" ui-sortable="sortableOptions">
-      <div>
-        <!--Question List (Repeat Start)-->
-        <uib-accordion-group ng-repeat="question in questionList">
-          <div ng-init= "isNewQuestion = question.type == 'new-question';" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" style="position:relative;float:left;">
-          
-          <div ng-class="{editableArea:editMode,dropableArea: true}">
-             <uib-accordion-heading>
-              <span ng-hide="question.label == ''">{{$index+1}} )</span> 
-              <span ng-hide="editMode" class="question-label">{{question.label}}</span>
-              <input ng-show="editMode" type="text" name="QuestionLabel" ng-model="question.label">   
-              <button class="btn edit-btn btn-primary pull-right" data-ng-hide="question.type == 'new-question'" type="button" data-ng-click="deleteQuestion($index,$event)">Delete</button>
-             </uib-accordion-heading>
-              <!--Checkboxes and RadioButtons-->
-              <span>
+        <uib-accordion is-open="status.open" close-others="oneAtATime" ui-sortable="sortableOptions" ng-model="questionList">
+            <!--Question List (Repeat Start)-->
+            <uib-accordion-group accordion-group ng-repeat="question in questionList">
+                <div ng-init= "isNewQuestion = question.type == 'new-question';" ng-drop="editMode || isNewQuestion"  ng-drop-success="onDropComplete($data,$index,false)" ng-class="{'newQuestion':question.type == 'new-question','question': true,'ui-state-default': true}" style="position:relative;float:left;">
+                    <div ng-class="{editableArea:editMode,dropableArea: true}">
+                        <uib-accordion-heading>
+                            <div class="handle btn btn-primary"><i class="glyphicon glyphicon-move"></i></div>
+                            <span ng-hide="question.label == ''">{{$index+1}} )</span> 
+                            <span ng-hide="editMode" class="question-label">{{question.label}}</span>
+                            <input ng-show="editMode" type="text" name="QuestionLabel" ng-model="question.label">   
+                            <button class="btn edit-btn btn-primary pull-right" data-ng-hide="question.type == 'new-question'" type="button" data-ng-click="deleteQuestion($index,$event)">Delete</button>
+                        </uib-accordion-heading>
+                        <!--Checkboxes and RadioButtons-->
+                        <span>
+                            <div class="optionsGroup">
+                                <ul>
+                                    <li ng-if="question.buttonType == 'checkbox'" ng-repeat="option in question.options">
+                                        <label>
+                                            <input type="checkbox" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
+                                            <span ng-hide="editMode">{{option.optionKey}}</span>
+                                            <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
+                                        </label>
+                                    </li>
+                                    <li ng-if="question.buttonType =='radiobutton'" ng-repeat="option in question.options">
+                                        <label>
+                                            <input type="radio" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
+                                            <span ng-hide="editMode">{{option.optionKey}}</span>
+                                            <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>                 
+                        </span>
+                        <!--Checkboxes and RadioButtons End-->
+                        
+                        <!--Date Time-->
+                        <div ng-show="question.isDateTime" class="isDateTime-sect" style="margin: 10px 0;">
+                            <input type="datetime-local" name="bdaytime">
+                        </div>
+                        <!--Date Time End-->
+                        
+                        <!--Textarea and file upload-->
+                        <div ng-show="question.isCommentEnable" class="comment-sect">
+                            <textarea ></textarea>
+                        </div>   
+                        <div ng-show="question.isImageUpload" class="imageUpload-sect" style="margin: 15px 0;">
+                            <p>Image: </p>
+                            <input type="file" id="myFile">
+                        </div>
+                        <div ng-show="question.isVideoUpload" class="videoUpload-sect">
+                            <p>Video: </p>
+                            <input type="file" id="myFile">
+                        </div>    
+                        <!--Textarea and file upload End-->              
+                        
+                        <!--Drop Down Button Functionality -->
+                        <div class="btn-group add-btn" data-ng-show="editMode || isNewQuestion" uib-dropdown is-open="status.isopen">
+                            <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+                            + <span class="caret"></span>
+                            </button>
+                            <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                            <li role="menuitem" ng-click="addComponent({name:'comment'},$index)"><a href="javascript:void(0)">Add comment</a></li>
+                            <li role="menuitem" ng-click="addComponent({name:'imageupload'},$index)"><a href="javascript:void(0)">Upload image</a></li>
+                            <li role="menuitem" ng-click="addComponent({name:'videoupload'},$index)"><a href="javascript:void(0)">Upload video</a></li>           
+                            </ul>
+                        </div>
+                        <!--Drop Down Button Functionality (Repeat End)-->
+                        
+                        <!--Save & Cancel Button Functionality -->
+                        <div class='save-cancel-btn' data-ng-show="editMode || isNewQuestion" style='margin-top: 20px;'>
+                                <button class='btn btn-primary pull-left' data-ng-click="editMode = false; cancelQuestion($index)" value='Edit'>Cancel</button>
+                                <button class='btn btn-primary pull-right' data-ng-click="editMode = false" value='Save'>Save</button>
+                        </div>
+                        
+                        <button class="btn btn-primary edit-btn" data-ng-hide="editMode || (question.type == 'new-question')" type="button" data-ng-click="editMode = true">Edit</button>
+                        <!--Save & Cancel Button Functionality End -->
+                    </div>
+                </div>
+            </uib-accordion-group>  
+        </uib-accordion>              
+        
+        <!--For NewQuestion-->
+        <div ng-drop="true"  ng-drop-success="onDropComplete($data,$index,true)" ng-class="{'newQuestion':true}" style="position:relative;float:left;">
+            <span ng-hide="newQuestion.label">
+                <span>Drop question here</span>                    
+            </span>
+            <input ng-show="newQuestion.label" type="text" name="QuestionLabel" ng-model="newQuestion.label">
+            <!--Checkboxes and RadioButtons-->
+            <span>
                 <div class="optionsGroup">
                     <ul>
-                        <li ng-if="question.buttonType == 'checkbox'" ng-repeat="option in question.options">
+                        <li ng-if="newQuestion.buttonType == 'checkbox'" ng-repeat="option in newQuestion.options">
                             <label>
                                 <input type="checkbox" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
-                                <span ng-hide="editMode">{{option.optionKey}}</span>
-                                <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
+                                <input type="text" ng-model="option.optionKey"> 
                             </label>
                         </li>
-                        <li ng-if="question.buttonType =='radiobutton'" ng-repeat="option in question.options">
+                        <li ng-if="newQuestion.buttonType =='radiobutton'" ng-repeat="option in newQuestion.options">
                             <label>
                                 <input type="radio" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
-                                <span ng-hide="editMode">{{option.optionKey}}</span>
-                                <input ng-show="editMode" type="text" ng-model="option.optionKey"> 
+                                <input type="text" ng-model="option.optionKey"> 
                             </label>
                         </li>
                     </ul>
                 </div>                 
-              </span>
-              <!--Checkboxes and RadioButtons End-->
-              
-              <!--Date Time-->
-              <div ng-show="question.isDateTime" class="isDateTime-sect" style="margin: 10px 0;">
-                  <input type="datetime-local" name="bdaytime">
-              </div>
-              <!--Date Time End-->
-             
-              <!--Textarea and file upload-->
-              <div ng-show="question.isCommentEnable" class="comment-sect">
-                  <textarea ></textarea>
-              </div>   
-              <div ng-show="question.isImageUpload" class="imageUpload-sect" style="margin: 15px 0;">
-                  <p>Image: </p>
-                  <input type="file" id="myFile">
-              </div>
-              <div ng-show="question.isVideoUpload" class="videoUpload-sect">
-                  <p>Video: </p>
-                  <input type="file" id="myFile">
-              </div>    
-              <!--Textarea and file upload End-->              
-                          
-          </div>
-          <!--Drop Down & Edit Button Functionality -->
-          <div class="btn-group add-btn" data-ng-show="editMode || isNewQuestion" uib-dropdown is-open="status.isopen">
-            <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
-              + <span class="caret"></span>
-            </button>
-            <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-              <li role="menuitem" ng-click="addComponent({name:'comment'},$index)"><a href="javascript:void(0)">Add comment</a></li>
-              <li role="menuitem" ng-click="addComponent({name:'imageupload'},$index)"><a href="javascript:void(0)">Upload image</a></li>
-              <li role="menuitem" ng-click="addComponent({name:'videoupload'},$index)"><a href="javascript:void(0)">Upload video</a></li>           
-            </ul>
-          </div>
-          <div class='save-cancel-btn' data-ng-show="editMode || isNewQuestion" style='margin-top: 20px;'>
-                <button class='btn btn-primary pull-left' data-ng-click="editMode = false; cancelQuestion($index)" value='Edit'>Cancel</button>
-                <button class='btn btn-primary pull-right' data-ng-click="editMode = false" value='Save'>Save</button>
-          </div>
-          
-          <button class="btn btn-primary edit-btn" data-ng-hide="editMode || (question.type == 'new-question')" type="button" data-ng-click="editMode = true">Edit</button>
-          
-        </div>
-        <!--Drop Down & Edit Button Functionality (Repeat End)-->
-        </uib-accordion-group>                
-      </div>
-  </uib-accordion>
-  
-  <!--For NewQuestion-->
-  <div ng-drop="true"  ng-drop-success="onDropComplete($data,$index,true)" ng-class="{'newQuestion':true}" style="position:relative;float:left;">
-      <span ng-hide="newQuestion.label">
-          <span>Drop question here</span>                    
-      </span>
-      <input ng-show="newQuestion.label" type="text" name="QuestionLabel" ng-model="newQuestion.label">
-      <!--Checkboxes and RadioButtons-->
-      <span>
-        <div class="optionsGroup">
-            <ul>
-                <li ng-if="newQuestion.buttonType == 'checkbox'" ng-repeat="option in newQuestion.options">
-                    <label>
-                        <input type="checkbox" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
-                        <input type="text" ng-model="option.optionKey"> 
-                    </label>
-                </li>
-                <li ng-if="newQuestion.buttonType =='radiobutton'" ng-repeat="option in newQuestion.options">
-                    <label>
-                        <input type="radio" ng-model="option.optionState" ng-checked="{{option.optionState}}"/>
-                        <input type="text" ng-model="option.optionKey"> 
-                    </label>
-                </li>
-            </ul>
-        </div>                 
-      </span>
-      <!--Checkboxes and RadioButtons End-->
-      <button class='btn btn-primary pull-right' ng-show="newQuestion.label" ng-click="saveNewQuestion(true)" value='Save'>Save</button> 
-  </div>  
-  <!--For NewQuestion END-->
+            </span>
+            <!--Checkboxes and RadioButtons End-->
+            <button class='btn btn-primary pull-right' ng-show="newQuestion.label" ng-click="saveNewQuestion(true)" value='Save'>Save</button> 
+        </div>  
+        <!--For NewQuestion END-->
         
-  <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
+        <div class=""><button class="btn btn-primary" ng-click="saveTemplate()" style="">Save Template</button></div>
   </div>
 </div>
   
   
   <script src="libs/jquery.min.js"></script>
+  <script src="libs/jquery-ui.js"></script>
   <script src="libs/angular.js"></script>
   <script src="libs/angular-animate.js"></script>
   <script src="libs/ui-bootstrap-tpls-1.1.2.js"></script>

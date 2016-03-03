@@ -3,7 +3,7 @@ angular.module('ExampleApp', ['ngDraggable','ui.bootstrap']).
       controller('MainCtrl', function ($scope,$sce,$compile,$http) {
         $scope.draggableObjects = [ {name:'questions'}, {name:'checkbox'}, {name:'radiobutton'}, {name:'datetime'}];        
         $scope.status = {
-                                isFirstOpen: true,
+                                isFirstOpen: false,
                                 isFirstDisabled: false
                         };
   
